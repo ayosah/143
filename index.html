@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>143</title>
+
+<style>
+/* ================= RESET ================= */
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff9fa0, #c4fac9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ================= APP CARD ================= */
+#app {
+  position: relative;
+  background: #ffe3e3;
+  width: 92%;
+  max-width: 420px;
+  padding: 2rem;
+  border-radius: 22px;
+  box-shadow: 0 25px 50px rgba(0,0,0,.25);
+  text-align: center;
+}
+
+#scene-image {
+  max-width: 100%;
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+#scene-text {
+  font-size: 1.15rem;
+  line-height: 1.55;
+  min-height: 90px;
+  white-space: pre-line;
+}
+
+#choices {
+  margin-top: 1.5rem;
+  position: relative;
+}
+
+/* ================= BUTTONS ================= */
+button {
+  width: 100%;
+  padding: .9rem;
+  margin: .45rem 0;
+  font-size: 1rem;
+  border-radius: 14px;
+  border: none;
+  background: #ffabbf;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+button:hover,
+button:active {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(255,111,145,.4);
+}
+
+/* NO BUTTON SPECIAL */
+.no-btn {
+  background: #ffb6b6;
+}
+
+/* ================= ANIMATIONS ================= */
+.fade {
+  animation: fadeIn .35s ease;
+}
+
+.shake {
+  animation: shake .4s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+/* ================= PARTICLES ================= */
+.heart {
+  position: fixed;
+  bottom: 20px;
+  font-size: 1.5rem;
+  animation: floatUp 2s ease-out forwards;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-160px);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: fixed;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+  <img id="scene-image" src="" alt="">
+  <div id="scene-text"></div>
+  <div id="choices"></div>
+</div>
+
+<script>
+/* ==================================================
+   STORY DATA WITH IMAGES
+================================================== */
+const scenes = {
+  start: {
+    text: "Kenneth asked you if you want reto.\nWhat will you say?",
+    effect: "fade",
+    image: "images/start.jpg",
+    choices: [
+      { label: "YES", next: "describe" },
+      { label: "CONTINUE FIXING YOUR LASHES", next: "shaira" }
+    ]
+  },
+
+  shaira: {
+    text: "Shaira interrupts and says:\n“Who is your friend Kenneth? Matino ba yan?”",
+    effect: "shake",
+    image: "images/shaira.jpg",
+    choices: [
+      { label: "DON’T CARE", next: "prompt" },
+      { label: "GOT CURIOUS", next: "describe" }
+    ]
+  },
+
+  describe: {
+    text: "Kenneth describes his friend.\nWhat are your thoughts?",
+    effect: "fade",
+    image: "images/describe.jpg",
+    choices: [
+      { label: "WE CAN TALK, BUT TALK LANG", next: "friendRequest" },
+      { label: "CONTINUE FIXING YOUR LASHES", next: "prompt" }
+    ]
+  },
+
+  friendRequest: {
+    text: "Javier — Kenneth’s friend — sends you a friend request.\nDo you accept?",
+    effect: "fade",
+    image: "images/friendRequest.jpg",
+    choices: [
+      { label: "CONFIRM", next: "ligaw" },
+      { label: "DELETE", next: "prompt" }
+    ]
+  },
+
+  ligaw: {
+    text: "Javier asks you:\n“Can I ligaw?”",
+    effect: "fade",
+    image: "images/ligaw.jPEG",
+    choices: [
+      { label: "SURE, PAKASAL NA TAYO", next: "happy" },
+      { label: "SORRY, STUDY FIRST", next: "prompt" }
+    ]
+  },
+
+  /* ===== HARD END ===== */
+  prompt: {
+    text: "YOU ARE NOW A GRADUATING STUDENT.\n\Some paths require letting go.",
+    effect: "shake",
+    image: "images/prompt.JPG",
+    choices: []
+  },
+  /* ===== LETTER ===== */
+  happy: {
+    text: "We became the happiest version of yourself We’ve walked through so many challenges together—some days were tough, some moments uncertain—but through it all, we never walked alone. Every challenge only showed me how strong we are together.",
+    effect: "hearts",
+    image: "images/happy.JPEG",
+    choices: [
+      { label: "NEXT", next: "challenges" }
+    ]
+  },
+
+  challenges: {
+    text: "Amid the struggles, we also found countless happy moments to cherish—the laughter, the small victories, the quiet times that made life feel magical. Those moments are treasures We carry every day.",
+    effect: "fade",
+    image: "images/challenges.JPEG",
+    choices: [
+      { label: "NEXT", next: "need" }
+    ]
+  },
+
+  need: {
+    text: "And somewhere along the way, something beautiful happened: we became each other’s sandalan, each other’s safe place, the ones we can truly depend on. Not just companions, but a part of each other’s lives in the deepest, most meaningful way.",
+    effect: "hearts",
+    image: "images/need.jpg",
+    choices: [
+      { label: "NEXT", next: "final" }
+    ]
+  },
+
+  /* ===== FINAL QUESTION ===== */
+  final: {
+    text: "So, Kylie Georgianne BarLis Cerera, lovey…\nWould you be my Valentine? ❤️",
+    effect: "fade",
+    image: "images/final.JPEG",
+    choices: [
+      { label: "YES ", next: "yes", type: "yes" },
+      { label: "NO ", next: null, type: "no" }
+    ]
+  },
+
+  yes: {
+    text: "You chose this story.\nAnd you chose me I LOVE YOU",
+    effect: "confetti",
+    image: "images/need.jpg",
+    choices: []
+  }
+};
+
+/* ==================================================
+   ENGINE
+================================================== */
+const app = document.getElementById("app");
+const textEl = document.getElementById("scene-text");
+const choicesEl = document.getElementById("choices");
+const imageEl = document.getElementById("scene-image");
+
+let currentScene = "start";
+
+function typeText(text, callback) {
+  textEl.textContent = "";
+  let i = 0;
+  const interval = setInterval(() => {
+    textEl.textContent += text[i];
+    i++;
+    if (i >= text.length) {
+      clearInterval(interval);
+      callback && callback();
+    }
+  }, 22);
+}
+
+function applyEffect(effect) {
+  app.classList.remove("shake");
+  if (effect === "shake") app.classList.add("shake");
+  if (effect === "hearts") spawnHearts();
+  if (effect === "confetti") spawnConfetti();
+}
+
+function renderScene(id) {
+  const scene = scenes[id];
+  currentScene = id;
+
+  app.classList.remove("fade");
+  void app.offsetWidth;
+  app.classList.add("fade");
+
+  // update image
+  if (scene.image) {
+    imageEl.src = scene.image;
+    imageEl.style.display = "block";
+  } else {
+    imageEl.style.display = "none";
+  }
+
+  choicesEl.innerHTML = "";
+
+  typeText(scene.text, () => {
+    scene.choices.forEach(choice => {
+      const btn = document.createElement("button");
+      btn.textContent = choice.label;
+
+      if (choice.type === "no") {
+        btn.classList.add("no-btn");
+        btn.style.position = "relative";
+        btn.onclick = () => {
+          btn.style.position = "absolute";
+          moveNoButton(btn);
+        };
+      } else {
+        btn.onclick = () => renderScene(choice.next);
+      }
+
+      choicesEl.appendChild(btn);
+    });
+  });
+
+  applyEffect(scene.effect);
+}
+
+/* ================= NO BUTTON LOGIC ================= */
+function moveNoButton(btn) {
+  const container = app.getBoundingClientRect();
+  const btnRect = btn.getBoundingClientRect();
+
+  const maxX = container.width - btnRect.width - 20;
+  const maxY = container.height - btnRect.height - 20;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  btn.style.left = x + "px";
+  btn.style.top = y + "px";
+}
+
+/* ================= PARTICLES ================= */
+function spawnHearts() {
+  for (let i = 0; i < 12; i++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = "❤️";
+    h.style.left = Math.random() * 100 + "%";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 2000);
+  }
+}
+
+function spawnConfetti() {
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "%";
+    c.style.background = `hsl(${Math.random()*360},100%,70%)`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+}
+
+/* ================= START ================= */
+renderScene(currentScene);
+</script>
+
+</body>
+</html>
