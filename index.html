@@ -164,17 +164,40 @@
             transform: translateX(-50%) translateY(-130px); 
         }
 
-        /* Horizontal Enlarge State */
+/* Horizontal Enlarge State - RESPONSIVE FOR MOBILE */
         .picture-container.reward-state {
             position: fixed;
             top: 50%;
             left: 50%;
-            width: 750px;  
-            height: 480px; 
+            width: 90vw;          /* Fits 90% of a phone screen width */
+            max-width: 750px;     /* Caps it at 750px for computer screens */
+            height: 70vh;         /* Fits 70% of a phone screen height */
+            max-height: 480px;    /* Caps it at 480px for computer screens */
             transform: translate(-50%, -50%) !important;
             z-index: 1000;
             pointer-events: auto;
             cursor: pointer;
+        }
+
+        /* Adjusts the text size so it looks perfect on small phone screens */
+        @media (max-width: 600px) {
+            .card-back {
+                padding: 20px 15px; 
+            }
+            .letter-content h3 {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+            }
+            .letter-content p {
+                font-size: 0.95rem;
+                line-height: 1.4;
+                margin-bottom: 10px;
+                text-indent: 15px;
+            }
+            .signature {
+                font-size: 1.8rem;
+                margin-top: 10px;
+            }
         }
 
         .card-inner {
@@ -393,3 +416,4 @@
     </script>
 </body>
 </html>
+
