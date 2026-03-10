@@ -1,371 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>143</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 4th Month, Lovey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Premium Color Palette */
+            --bg-color: #F6F4EB; 
+            --env-dark: #232d26; 
+            --env-base: #2a362e; 
+            --env-light: #324037; 
+            --gold: #CFB53B;      
+            --paper: #FAF8F2;     
+            --ink: #333333;       
+        }
 
-<style>
-/* ================= RESET ================= */
-* {
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.03) 100%);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            overflow: hidden;
+            perspective: 1200px;
+        }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #ff9fa0, #c4fac9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
+        @keyframes gentleFloat {
+            0% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-8px) rotate(-1deg); }
+            100% { transform: translateY(0px) rotate(-2deg); }
+        }
 
-/* ================= APP CARD ================= */
-#app {
-  position: relative;
-  background: #ffe3e3;
-  width: 92%;
-  max-width: 420px;
-  padding: 2rem;
-  border-radius: 22px;
-  box-shadow: 0 25px 50px rgba(0,0,0,.25);
-  text-align: center;
-}
+        .click-instruction {
+            font-size: 1.5rem;
+            color: #6a6a6a;
+            margin-bottom: 50px;
+            transition: opacity 0.8s ease;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 400;
+            position: absolute;
+            top: 15%;
+        }
 
-#scene-image {
-  max-width: 100%;
-  border-radius: 16px;
-  margin-bottom: 1rem;
-  display: none;
-}
+        /* --- THE ENVELOPE --- */
+        .envelope-wrapper {
+            position: relative;
+            width: 320px;
+            height: 210px;
+            cursor: pointer;
+            animation: gentleFloat 4s ease-in-out infinite;
+            transition: transform 0.4s ease;
+        }
 
-#scene-text {
-  font-size: 1.15rem;
-  line-height: 1.55;
-  min-height: 90px;
-  white-space: pre-line;
-}
+        .envelope-wrapper.open {
+            animation: none;
+            transform: rotate(0deg) !important;
+            cursor: default; 
+        }
 
-#choices {
-  margin-top: 1.5rem;
-  position: relative;
-}
+        .envelope-wrapper:hover {
+            animation-play-state: paused;
+            transform: scale(1.03) rotate(0deg);
+        }
 
-/* ================= BUTTONS ================= */
-button {
-  width: 100%;
-  padding: .9rem;
-  margin: .45rem 0;
-  font-size: 1rem;
-  border-radius: 14px;
-  border: none;
-  background: #ffabbf;
-  color: rgb(255, 255, 255);
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease;
-}
+        .env-back {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--env-base);
+            border-radius: 2px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            z-index: 1;
+        }
 
-button:hover,
-button:active {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(255,111,145,.4);
-}
+        .env-pocket {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 160px solid var(--env-light);
+            border-right: 160px solid var(--env-light);
+            border-bottom: 120px solid var(--env-base);
+            border-top: 90px solid transparent;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+            z-index: 3;
+            pointer-events: none;
+            filter: drop-shadow(0 -1px 1px rgba(0,0,0,0.2));
+        }
 
-/* NO BUTTON SPECIAL */
-.no-btn {
-  background: #ffb6b6;
-}
+        .env-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 130px solid var(--env-dark);
+            border-bottom: 80px solid transparent;
+            transform-origin: top;
+            z-index: 4;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s 0.35s;
+        }
 
-/* ================= ANIMATIONS ================= */
-.fade {
-  animation: fadeIn .35s ease;
-}
+        .wax-seal {
+            position: absolute;
+            bottom: 60px; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 30% 30%, #e8d070, var(--gold), #997a15);
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.4);
+            transition: opacity 0.4s ease;
+        }
 
-.shake {
-  animation: shake .4s;
-}
+        .wax-seal::after {
+            content: "♥";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #997a15;
+            font-size: 1.2rem;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+        }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+        .open .env-flap {
+            transform: rotateX(180deg);
+            z-index: 1; 
+        }
+        .open .wax-seal {
+            opacity: 0; 
+        }
 
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  50% { transform: translateX(6px); }
-  75% { transform: translateX(-6px); }
-  100% { transform: translateX(0); }
-}
+        /* --- THE 3D CARD / PICTURE --- */
+        .picture-container {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            width: 270px;
+            height: 180px;
+            z-index: 2;
+            perspective: 1200px;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+                        all 0.8s ease;
+            pointer-events: none; 
+        }
 
-/* ================= PARTICLES ================= */
-.heart {
-  position: fixed;
-  bottom: 20px;
-  font-size: 1.5rem;
-  animation: floatUp 2s ease-out forwards;
-}
+        .picture-container.peek {
+            transform: translateX(-50%) translateY(-120px);
+            pointer-events: auto; 
+            cursor: pointer;
+        }
+        .picture-container.peek:hover {
+            transform: translateX(-50%) translateY(-130px); 
+        }
 
-@keyframes floatUp {
-  to {
-    transform: translateY(-160px);
-    opacity: 0;
-  }
-}
+        /* Horizontal Enlarge State */
+        .picture-container.reward-state {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 750px;  
+            height: 480px; 
+            transform: translate(-50%, -50%) !important;
+            z-index: 1000;
+            pointer-events: auto;
+            cursor: pointer;
+        }
 
-.confetti {
-  position: fixed;
-  top: 0;
-  width: 8px;
-  height: 8px;
-  animation: fall 3s linear forwards;
-}
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background: white;
+            border-radius: 4px;
+        }
 
-@keyframes fall {
-  to {
-    transform: translateY(100vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-</style>
+        .picture-container.reward-state .card-inner {
+            box-shadow: 0 0 60px rgba(0,0,0,0.2), 0 0 20px rgba(207, 181, 59, 0.3); 
+        }
+
+        .flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 12px 12px 30px 12px; 
+            box-sizing: border-box;
+        }
+
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            border-radius: 2px;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: var(--paper);
+            box-sizing: border-box;
+            padding: 25px 35px; /* Extra padding for the text */
+            border: 1px solid var(--gold);
+            outline: 1px solid var(--gold);
+            outline-offset: -6px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .letter-content {
+            flex-grow: 1;
+            text-align: left;
+            color: var(--ink);
+            /* Allows scrolling if the screen is small */
+            overflow-y: auto; 
+            padding-right: 10px;
+        }
+
+        /* Custom scrollbar to match aesthetic */
+        .letter-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .letter-content::-webkit-scrollbar-thumb {
+            background-color: var(--gold);
+            border-radius: 10px;
+        }
+
+        .letter-content h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--env-dark);
+        }
+
+        .letter-content p {
+            margin: 0 0 12px 0; /* Space between paragraphs */
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #444;
+            text-indent: 20px; /* Slight indent for classic letter feel */
+        }
+
+        .signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: var(--env-base);
+            margin-top: 20px;
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        .instruction-text {
+            position: absolute;
+            width: 100%;
+            bottom: -40px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #888;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .picture-container.peek .instruction-text,
+        .picture-container.reward-state .instruction-text {
+            opacity: 1;
+        }
+
+    </style>
 </head>
-
 <body>
 
-<div id="app">
-  <img id="scene-image" src="" alt="">
-  <div id="scene-text"></div>
-  <div id="choices"></div>
+    <div class="click-instruction" id="clickText">Happy Monthsary!</div>
+
+    <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+        <div class="env-back"></div>
+        
+        <div class="picture-container" id="awardItem">
+            <div class="card-inner">
+                
+                <div class="card-front">
+                    <img src="pic.jpg" alt="Aesthetic Memory">
+                </div>
+
+                <div class="card-back">
+                    <div class="letter-content">
+<div class="letter-content">
+    <h3>Lovey,</h3>
+    
+    <p>“Of all the lives that exist, I am so happy to exist in yours.” You always told me that it is normal to hurt each other; there’s a popular saying when couples fight and everything seems to be in chaos: “It hurts to let go, but sometimes it hurts more to hold on.” But of all the things my hands have held, the best by far is you.</p>
+
+    <p>Every time our monthsary approaches, we always have moments where everything feels blank, sad, and somewhat unaligned for us. However, despite that, we always find ways to reconcile and earn each other’s love.</p>
+
+    <p> I know na that I can’t always help you in times when you are feeling any negativity, and I have accepted that. Remember our last talk it is about how we tell everything and learn to do things even it is hard, and yet you still can’t tell me everything and the mood changes always. I am accepting that now, Lovey. I think that is the boundary you set between us and you. All I can say po is you are so much more than the negative things in your life. You are beautiful, you are precious, you are worth it, and you are more than good enough.</p>
+
+    <p>In our 4th month, I am very thankful that one of the milestones in our lives the graduation and the final demo, is that I am with you, and you’re with me. I am happy that you are you, thankful for your best efforts, and sorry for the times I've made you do things that are not you. I am sorry..</p>
+    
+    <p>Of all the lives that exist, I am happy to exist in ours. Of all the people that exist, I am happy that you met me. Of all the time that exists, I am happy that we live in the same timeline. Maybe doing things the hard way isn't for you, but it is the time you need, and I am giving you that. I’ll do better to lessen the burden while you do your time; that is a promise that I will uphold starting now. </p>
+
+    <div class="signature">I love you lovey</div>
 </div>
+                    </div>
+                </div>
 
-<script>
-/* ==================================================
-   STORY DATA WITH IMAGES
-================================================== */
-const scenes = {
-  start: {
-    text: "Kenneth asked you if you want reto.\nWhat will you say?",
-    effect: "fade",
-    image: "images/start.jpg",
-    choices: [
-      { label: "YES", next: "describe" },
-      { label: "CONTINUE FIXING YOUR LASHES", next: "shaira" }
-    ]
-  },
+            </div>
+            <div class="instruction-text" id="dynamicInstruction"></div>
+        </div>
 
-  shaira: {
-    text: "Shaira interrupts and says:\n“Who is your friend Kenneth? Matino ba yan?”",
-    effect: "shake",
-    image: "images/shaira.jpg",
-    choices: [
-      { label: "DON’T CARE", next: "prompt" },
-      { label: "GOT CURIOUS", next: "describe" }
-    ]
-  },
+        <div class="env-pocket"></div>
+        <div class="env-flap">
+            <div class="wax-seal"></div>
+        </div>
+    </div>
 
-  describe: {
-    text: "Kenneth describes his friend.\nWhat are your thoughts?",
-    effect: "fade",
-    image: "images/describe.jpg",
-    choices: [
-      { label: "WE CAN TALK, BUT TALK LANG", next: "friendRequest" },
-      { label: "CONTINUE FIXING YOUR LASHES", next: "prompt" }
-    ]
-  },
+    <script>
+        const envelope = document.getElementById('envelope');
+        const awardItem = document.getElementById('awardItem');
+        const clickText = document.getElementById('clickText');
+        const dynamicInstruction = document.getElementById('dynamicInstruction');
 
-  friendRequest: {
-    text: "Javier — Kenneth’s friend — sends you a friend request.\nDo you accept?",
-    effect: "fade",
-    image: "images/friendrequest.jpg",
-    choices: [
-      { label: "CONFIRM", next: "ligaw" },
-      { label: "DELETE", next: "prompt" }
-    ]
-  },
+        function openEnvelope() {
+            if (envelope.classList.contains('open')) return;
 
-  ligaw: {
-    text: "Javier asks you:\n“Can I ligaw?”",
-    effect: "fade",
-    image: "images/ligaw.JPEG",
-    choices: [
-      { label: "SURE, PAKASAL NA TAYO", next: "happy" },
-      { label: "SORRY, STUDY FIRST", next: "prompt" }
-    ]
-  },
+            // 1. Unfold Top Flap
+            envelope.classList.add('open');
+            clickText.style.opacity = '0'; 
 
-  /* ===== HARD END ===== */
-  prompt: {
-    text: "YOU ARE NOW A GRADUATING STUDENT.\n\Some paths require letting go.",
-    effect: "shake",
-    image: "images/prompt.JPG",
-    choices: []
-  },
-  /* ===== LETTER ===== */
-  happy: {
-    text: "We became the happiest version of ourselves. We’ve walked through so many challenges together—some days were tough, some moments uncertain—but through it all, we never walked alone. Every challenge only showed me how strong we are together.",
-    effect: "hearts",
-    image: "images/happy.JPEG",
-    choices: [
-      { label: "NEXT", next: "challenges" }
-    ]
-  },
+            // 2. Wait 2 seconds, then Peek
+            setTimeout(() => {
+                awardItem.classList.add('peek');
+                dynamicInstruction.innerText = "Click the photo to pull it out";
+            }, 1000); 
+        }
 
-  challenges: {
-    text: "Amid the struggles, we also found countless happy moments to cherish—the laughter, the small victories, the quiet times that made life feel magical. Those moments are treasures we carry every day.",
-    effect: "fade",
-    image: "images/challenges.JPEG",
-    choices: [
-      { label: "NEXT", next: "need" }
-    ]
-  },
+        awardItem.addEventListener('click', (e) => {
+            e.stopPropagation(); 
 
-  need: {
-    text: "And somewhere along the way, something beautiful happened: we became each other’s sandalan, each other’s safe place, the ones we can truly depend on. Not just companions, but a part of each other’s lives in the deepest, most meaningful way.",
-    effect: "hearts",
-    image: "images/need.jpg",
-    choices: [
-      { label: "NEXT", next: "final" }
-    ]
-  },
-
-  /* ===== FINAL QUESTION ===== */
-  final: {
-    text: "So, Kylie Georgianne BarLis Cerera, lovey…\nWould you be my Valentine? ❤️",
-    effect: "fade",
-    image: "images/final.JPEG",
-    choices: [
-      { label: "YES ", next: "yes", type: "yes" },
-      { label: "NO ", next: null, type: "no" }
-    ]
-  },
-
-  yes: {
-    text: "You chose this story.\nAnd you chose me, I LOVE YOU",
-    effect: "confetti",
-    image: "images/yes.JPEG",
-    choices: []
-  }
-};
-
-/* ==================================================
-   ENGINE
-================================================== */
-const app = document.getElementById("app");
-const textEl = document.getElementById("scene-text");
-const choicesEl = document.getElementById("choices");
-const imageEl = document.getElementById("scene-image");
-
-let currentScene = "start";
-
-function typeText(text, callback) {
-  textEl.textContent = "";
-  let i = 0;
-  const interval = setInterval(() => {
-    textEl.textContent += text[i];
-    i++;
-    if (i >= text.length) {
-      clearInterval(interval);
-      callback && callback();
-    }
-  }, 22);
-}
-
-function applyEffect(effect) {
-  app.classList.remove("shake");
-  if (effect === "shake") app.classList.add("shake");
-  if (effect === "hearts") spawnHearts();
-  if (effect === "confetti") spawnConfetti();
-}
-
-function renderScene(id) {
-  const scene = scenes[id];
-  currentScene = id;
-
-  app.classList.remove("fade");
-  void app.offsetWidth;
-  app.classList.add("fade");
-
-  // update image
-  if (scene.image) {
-    imageEl.src = scene.image;
-    imageEl.style.display = "block";
-  } else {
-    imageEl.style.display = "none";
-  }
-
-  choicesEl.innerHTML = "";
-
-  typeText(scene.text, () => {
-    scene.choices.forEach(choice => {
-      const btn = document.createElement("button");
-      btn.textContent = choice.label;
-
-      if (choice.type === "no") {
-        btn.classList.add("no-btn");
-        btn.style.position = "relative";
-        btn.onclick = () => {
-          btn.style.position = "absolute";
-          moveNoButton(btn);
-        };
-      } else {
-        btn.onclick = () => renderScene(choice.next);
-      }
-
-      choicesEl.appendChild(btn);
-    });
-  });
-
-  applyEffect(scene.effect);
-}
-
-/* ================= NO BUTTON LOGIC ================= */
-function moveNoButton(btn) {
-  const container = app.getBoundingClientRect();
-  const btnRect = btn.getBoundingClientRect();
-
-  const maxX = container.width - btnRect.width - 20;
-  const maxY = container.height - btnRect.height - 20;
-
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
-
-  btn.style.left = x + "px";
-  btn.style.top = y + "px";
-}
-
-/* ================= PARTICLES ================= */
-function spawnHearts() {
-  for (let i = 0; i < 12; i++) {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.textContent = "❤️";
-    h.style.left = Math.random() * 100 + "%";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 2000);
-  }
-}
-
-function spawnConfetti() {
-  for (let i = 0; i < 30; i++) {
-    const c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = Math.random() * 100 + "%";
-    c.style.background = `hsl(${Math.random()*360},100%,70%)`;
-    document.body.appendChild(c);
-    setTimeout(() => c.remove(), 3000);
-  }
-}
-
-/* ================= START ================= */
-renderScene(currentScene);
-</script>
-
+            // 3. If peeking, Enlarge it
+            if (awardItem.classList.contains('peek') && !awardItem.classList.contains('reward-state')) {
+                awardItem.classList.add('reward-state');
+                
+                dynamicInstruction.style.opacity = '0';
+                setTimeout(() => {
+                    dynamicInstruction.innerText = "Click to flip and read";
+                    dynamicInstruction.style.opacity = '1';
+                }, 400);
+            } 
+            // 4. If enlarged, Flip it
+            else if (awardItem.classList.contains('reward-state') && !awardItem.classList.contains('flipped')) {
+                awardItem.classList.add('flipped');
+                
+                dynamicInstruction.style.opacity = '0';
+                setTimeout(() => {
+                    dynamicInstruction.innerText = "Click to lovingly put away";
+                    dynamicInstruction.style.opacity = '1';
+                }, 400);
+            } 
+            // 5. If flipped, Close everything
+            else if (awardItem.classList.contains('flipped')) {
+                awardItem.classList.remove('reward-state', 'flipped', 'peek');
+                dynamicInstruction.style.opacity = '0';
+                
+                setTimeout(() => {
+                    envelope.classList.remove('open');
+                    clickText.style.opacity = '1';
+                }, 800);
+            }
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
